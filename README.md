@@ -65,6 +65,13 @@ node --env-file=.env scripts/notify.mjs
 3. `Actions` 탭에서 `KB 시세 알림` 워크플로우를 `workflow_dispatch`로 한 번 수동 실행해 정상 동작을 확인한다.
 4. 이후 매주 금요일 12:00 KST(`.github/workflows/notify.yml`의 `cron: "0 3 * * 5"`)에 자동 실행된다.
    `CRON_EXPIRE_DATE`가 지나면 알림 없이 스킵만 하고 워크플로우 자체는 계속 남아있다 (필요 시 레포에서 직접 비활성화).
+5. Actions 탭 실행 기록의 트리거가 `Schedule`로 뜨면 cron이 실제로 자동 실행된 것이다 (`workflow_dispatch`는 수동 실행).
+
+### 60일 비활성 저장소 자동 비활성화 대응
+
+GitHub은 60일간 커밋이 없는 저장소의 scheduled workflow를 자동으로 꺼버린다. 이 워크플로우는
+매 실행마다 `.last-run` 파일에 타임스탬프를 기록해 커밋하는 스텝을 포함하고 있어, 정상적으로
+매주 실행되는 한 저장소가 계속 "활성" 상태로 유지되어 이 문제를 피할 수 있다.
 
 ## 동작 원리 / 리스크
 

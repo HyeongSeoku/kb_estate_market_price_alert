@@ -6,7 +6,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   notify:
@@ -23,3 +23,13 @@ jobs:
           HOUSE_LABEL: ${{ secrets.HOUSE_LABEL }}
           CRON_EXPIRE_DATE: ${{ secrets.CRON_EXPIRE_DATE }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      # GitHub은 60일간 커밋이 없는 저장소의 scheduled workflow를 자동 비활성화한다.
+      # 실행할 때마다 타임스탬프를 커밋해서 저장소를 계속 "활성" 상태로 유지한다.
+      - if: always()
+        run: |
+          echo "last run: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .last-run
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .last-run
+          git diff --cached --quiet || git commit -m "chore: record cron run $(date -u +%F)"
+          git push
