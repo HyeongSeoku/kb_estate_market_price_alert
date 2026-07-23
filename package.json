@@ -1,0 +1,13 @@
+{
+  "name": "kb-sise-notifier",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "notify": "node scripts/notify.mjs"
+  }
+}
